@@ -23,8 +23,9 @@ jobs:
           chmod 600 deploy_key
           eval "$(ssh-agent -s)"
           ssh-add deploy_key
-          # remote as ssh
-          git remote set-url origin "git@github.com:azu/deploy-key-push-workflow-trigger-example.git"
+          # set git remote url to ssh
+          # TODO: use some github.event?
+          # git remote set-url origin "git@github.com:azu/deploy-key-push-workflow-trigger-example.git"
           git fetch -p
           git checkout origin/$BRANCH
           git checkout -b $BRANCH
