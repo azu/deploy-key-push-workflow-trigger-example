@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Update README
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -24,6 +24,7 @@ jobs:
           echo "This is a test" >> README.md
           git add README.md
           git commit -m "Update README"
-          git push
+          git push --set-upstream origin $BRANCH
         env:
+          BRANCH: ${{ github.event.pull_request.head.ref }}
           DEPLOY_PRIVATE_KEY: ${{ secrets.DEPLOY_PRIVATE_KEY }}
