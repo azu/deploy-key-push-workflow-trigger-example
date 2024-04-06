@@ -1,8 +1,10 @@
 # GitHub Workflow
 # push on PR, update REAMDE content
-name: test
+name: pr-push
 on: 
   pull_request:
+    paths:
+      - trigger.txt
 permissions:
   contents: read
 jobs:
@@ -11,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Update README
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -21,9 +23,17 @@ jobs:
           chmod 600 deploy_key
           eval "$(ssh-agent -s)"
           ssh-add deploy_key
+          # set git remote url to ssh
+          # TODO: use some github.event?
+          # git remote set-url origin "git@github.com:azu/deploy-key-push-workflow-trigger-example.git"
+          git fetch -p
+          git checkout origin/$BRANCH
+          git checkout -b $BRANCH
+          # update README content
           echo "This is a test" >> README.md
           git add README.md
           git commit -m "Update README"
-          git push
+          git push --set-upstream origin $BRANCH
         env:
+          BRANCH: ${{ github.event.pull_request.head.ref }}
           DEPLOY_PRIVATE_KEY: ${{ secrets.DEPLOY_PRIVATE_KEY }}
