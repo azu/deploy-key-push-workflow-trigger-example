@@ -3,6 +3,8 @@
 name: pr-push
 on: 
   pull_request:
+    paths:
+      - trigger.txt
 permissions:
   contents: read
 jobs:
