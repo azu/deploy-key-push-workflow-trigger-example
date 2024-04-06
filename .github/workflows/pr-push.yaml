@@ -23,6 +23,10 @@ jobs:
           chmod 600 deploy_key
           eval "$(ssh-agent -s)"
           ssh-add deploy_key
+          git fetch -p
+          git checkout origin/$BRANCH
+          git checkout -b $BRANCH
+          # update README content
           echo "This is a test" >> README.md
           git add README.md
           git commit -m "Update README"
