@@ -1,0 +1,29 @@
+# GitHub Workflow
+# push on PR, update REAMDE content
+name: test
+on: 
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    name: "Test"
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: Update README
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          # setup deploy key for git push
+          echo "${DEPLOY_PRIVATE_KEY}" > deploy_key
+          chmod 600 deploy_key
+          eval "$(ssh-agent -s)"
+          ssh-add deploy_key
+          echo "This is a test" >> README.md
+          git add README.md
+          git commit -m "Update README"
+          git push
+        env:
+          DEPLOY_PRIVATE_KEY: ${{ secrets.DEPLOY_PRIVATE_KEY }}
